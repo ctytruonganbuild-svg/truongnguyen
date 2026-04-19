@@ -1,314 +1,672 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch Tuần Trăng - Thiên Văn Học</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .moon-container {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            position: relative;
-            background: radial-gradient(circle at 30% 30%, #334155, #0f172a);
-            box-shadow: 0 0 60px rgba(186, 230, 253, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .moon-svg {
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 0 10px rgba(241, 245, 249, 0.5));
-        }
-        .card-glass {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(224, 242, 254, 1);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chu Kỳ Mặt Trăng</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
+
+    * { font-family: 'Be Vietnam Pro', sans-serif; }
+
+    body {
+      background: linear-gradient(135deg, #e0f4ff 0%, #c7e9fb 40%, #b3dff7 100%);
+      min-height: 100vh;
+    }
+
+    /* Stars background */
+    .stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(100, 180, 255, 0.6);
+      animation: twinkle linear infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+
+    /* Moon orbit animation */
+    .orbit-container {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      margin: 0 auto;
+    }
+    .orbit-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 220px; height: 220px;
+      border: 2px dashed rgba(100, 170, 255, 0.5);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: rotateRing 29.53s linear infinite;
+    }
+    @keyframes rotateRing {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    .earth {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 64px; height: 64px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #60c0f0, #1a7abf 60%, #0d4e80);
+      box-shadow: 0 0 20px rgba(30, 120, 200, 0.5), inset -8px -8px 15px rgba(0,0,0,0.3);
+      animation: earthRotate 10s linear infinite;
+    }
+    @keyframes earthRotate {
+      from { filter: hue-rotate(0deg); }
+      to   { filter: hue-rotate(10deg); }
+    }
+    .earth::after {
+      content: '';
+      position: absolute;
+      top: 18%; left: 10%;
+      width: 30%; height: 15%;
+      background: rgba(100,200,100,0.4);
+      border-radius: 50%;
+      transform: rotate(-30deg);
+    }
+    .moon-wrapper {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 110px; height: 110px;
+      transform: translate(-50%, -50%);
+      animation: orbitMoon 29.53s linear infinite;
+    }
+    @keyframes orbitMoon {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    .moon {
+      position: absolute;
+      top: -14px; left: 50%;
+      width: 30px; height: 30px;
+      margin-left: -15px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #e8f4ff, #c8ddf0 50%, #a0b8cc);
+      box-shadow: 0 0 12px rgba(180,220,255,0.7), inset -4px -4px 8px rgba(0,0,0,0.2);
+      counter-reset: none;
+    }
+    .moon::before {
+      content: '';
+      position: absolute;
+      top: 20%; left: 20%;
+      width: 25%; height: 20%;
+      border-radius: 50%;
+      background: rgba(150,170,190,0.4);
+    }
+    .moon::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 18%; height: 18%;
+      border-radius: 50%;
+      background: rgba(150,170,190,0.3);
+    }
+
+    /* Card styling */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(180, 220, 255, 0.6);
+      border-radius: 1.25rem;
+      box-shadow: 0 8px 32px rgba(100, 170, 255, 0.15);
+    }
+
+    .info-item {
+      background: rgba(200, 235, 255, 0.4);
+      border: 1px solid rgba(140, 200, 255, 0.4);
+      border-radius: 0.75rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .info-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(80, 160, 230, 0.2);
+    }
+
+    .phase-card {
+      background: rgba(210, 240, 255, 0.5);
+      border: 1px solid rgba(140, 200, 255, 0.45);
+      border-radius: 0.75rem;
+      transition: transform 0.2s;
+    }
+    .phase-card:hover { transform: translateY(-3px); }
+
+    .phase-icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: #1a3a5c;
+      margin: 0 auto 0.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .phase-light {
+      position: absolute;
+      top: 0; right: 0;
+      background: #e8f4ff;
+      border-radius: 50%;
+      height: 100%;
+    }
+
+    input[type="date"], select {
+      background: rgba(220,242,255,0.7);
+      border: 1px solid rgba(100,180,255,0.5);
+      border-radius: 0.5rem;
+      color: #1a4a70;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    input[type="date"]:focus, select:focus {
+      border-color: #5ab4f0;
+      box-shadow: 0 0 0 3px rgba(90,180,240,0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #5ab4f0, #1a7abf);
+      color: white;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(26,122,191,0.3);
+    }
+    .btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(26,122,191,0.4);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .result-highlight {
+      background: linear-gradient(135deg, rgba(180,230,255,0.5), rgba(210,245,255,0.5));
+      border: 1px solid rgba(100,190,255,0.5);
+      border-radius: 1rem;
+    }
+
+    .progress-bar-wrap {
+      background: rgba(180,220,255,0.3);
+      border-radius: 999px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #5ab4f0, #1a7abf);
+      transition: width 1s ease;
+    }
+
+    .section-title {
+      color: #1a4a70;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    /* Tooltip */
+    .tooltip { position: relative; display: inline-block; }
+    .tooltip .tip {
+      visibility: hidden; opacity: 0;
+      background: #1a4a70;
+      color: #fff;
+      font-size: 0.72rem;
+      border-radius: 0.4rem;
+      padding: 4px 8px;
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+    .tooltip:hover .tip { visibility: visible; opacity: 1; }
+
+    /* Moon phase display */
+    #moonPhaseDisplay {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: #0d1a2a;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(100,180,255,0.4);
+    }
+    #moonPhaseDisplay .lit {
+      position: absolute;
+      top: 0; height: 100%;
+      border-radius: 50%;
+      background: #e8f4ff;
+      box-shadow: inset -2px 0 6px rgba(0,0,0,0.15);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(100,170,240,0.4); border-radius: 3px; }
+  </style>
 </head>
-<body class="bg-sky-50 min-h-screen text-slate-800">
+<body class="relative">
 
-    <div class="container mx-auto px-4 py-12 max-w-4xl">
-        <!-- Header -->
-        <header class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-sky-900 mb-2">Theo Dõi Chu Kỳ Mặt Trăng</h1>
-            <p class="text-sky-600">Khám phá vị trí và pha của Mặt Trăng so với Trái Đất</p>
-        </header>
+  <!-- Starfield -->
+  <div class="stars" id="stars"></div>
 
-        <div class="grid md:grid-cols-2 gap-8">
-            <!-- Left Side: Calculation & Controls -->
-            <div class="bg-white p-8 rounded-3xl shadow-xl shadow-sky-100 border border-sky-100">
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-sky-900 mb-2">Chọn ngày xem:</label>
-                    <input type="date" id="date-picker" class="w-full p-3 border border-sky-200 rounded-xl focus:ring-2 focus:ring-sky-400 focus:outline-none bg-sky-50/50">
-                </div>
+  <div class="relative z-10 max-w-5xl mx-auto px-4 py-8">
 
-                <div class="space-y-6">
-                    <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100">
-                        <p class="text-xs text-sky-500 uppercase tracking-wider font-bold mb-1">Pha hiện tại</p>
-                        <h2 id="phase-name" class="text-2xl font-bold text-sky-900">Đang tính toán...</h2>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-4 bg-white border border-sky-100 rounded-2xl">
-                            <p class="text-xs text-sky-500 font-bold uppercase mb-1">Độ chiếu sáng</p>
-                            <span id="illumination" class="text-xl font-semibold text-sky-800">0%</span>
-                        </div>
-                        <div class="p-4 bg-white border border-sky-100 rounded-2xl">
-                            <p class="text-xs text-sky-500 font-bold uppercase mb-1">Tuổi trăng</p>
-                            <span id="moon-age" class="text-xl font-semibold text-sky-800">0 ngày</span>
-                        </div>
-                    </div>
-
-                    <div class="pt-4 border-t border-sky-100">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-sky-600"><i class="fas fa-circle text-[10px] mr-2 text-sky-300"></i>Trăng non tiếp theo:</span>
-                            <span id="next-new-moon" class="text-sm font-semibold">--/--/----</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-sky-600"><i class="fas fa-circle text-[10px] mr-2 text-amber-300"></i>Trăng tròn tiếp theo:</span>
-                            <span id="next-full-moon" class="text-sm font-semibold">--/--/----</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Visualization -->
-            <div class="bg-sky-900 rounded-3xl p-8 flex flex-col items-center justify-center text-white shadow-2xl relative overflow-hidden">
-                <!-- Stars Background -->
-                <div class="absolute inset-0 opacity-20 pointer-events-none">
-                    <div class="absolute top-10 left-10 w-1 h-1 bg-white rounded-full"></div>
-                    <div class="absolute top-20 right-20 w-1 h-1 bg-white rounded-full"></div>
-                    <div class="absolute bottom-10 left-1/2 w-1 h-1 bg-white rounded-full"></div>
-                    <div class="absolute top-1/2 right-10 w-1 h-1 bg-white rounded-full"></div>
-                </div>
-
-                <div id="moon-visual" class="moon-container mb-8 z-10">
-                    <!-- SVG Moon will be injected here -->
-                </div>
-
-                <div class="text-center z-10">
-                    <h3 class="text-xl font-medium text-sky-200" id="visual-label">Mô Phỏng Trực Quan</h3>
-                    <p class="text-sm text-sky-400 mt-2 italic">Góc nhìn từ Trái Đất (Bắc Bán Cầu)</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-8 grid md:grid-cols-3 gap-4">
-            <div class="card-glass p-6 rounded-2xl flex items-center space-x-4">
-                <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center">
-                    <i class="fas fa-arrows-alt-v"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-sky-500 font-bold uppercase">Khoảng cách TB</p>
-                    <p class="font-semibold text-sky-900">384,400 km</p>
-                </div>
-            </div>
-            <div class="card-glass p-6 rounded-2xl flex items-center space-x-4">
-                <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center">
-                    <i class="fas fa-history"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-sky-500 font-bold uppercase">Chu kỳ giao hội</p>
-                    <p class="font-semibold text-sky-900">29.53 ngày</p>
-                </div>
-            </div>
-            <div class="card-glass p-6 rounded-2xl flex items-center space-x-4">
-                <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center">
-                    <i class="fas fa-tachometer-alt"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-sky-500 font-bold uppercase">Vận tốc quỹ đạo</p>
-                    <p class="font-semibold text-sky-900">1.022 km/s</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 8 Phases Overview -->
-        <div class="mt-8 bg-white/50 border border-sky-100 p-8 rounded-3xl">
-            <h3 class="text-lg font-bold text-sky-900 mb-6 flex items-center">
-                <i class="fas fa-moon mr-2"></i> Các giai đoạn trong chu kỳ
-            </h3>
-            <div class="grid grid-cols-4 md:grid-cols-8 gap-4 text-center">
-                <div class="space-y-2 opacity-70 hover:opacity-100 transition-opacity">
-                    <div class="w-10 h-10 mx-auto rounded-full bg-slate-800 border-2 border-sky-200"></div>
-                    <p class="text-[10px] font-bold text-sky-800 uppercase">Trăng Non</p>
-                </div>
-                <div class="space-y-2 opacity-70 hover:opacity-100 transition-opacity">
-                    <div class="w-10 h-10 mx-auto rounded-full bg-slate-800 border-2 border-sky-200 relative overflow-hidden">
-                        <div class="absolute right-0 w-1/4 h-full bg-sky-100"></div>
-                    </div>
-                    <p class="text-[10px] font-bold text-sky-800 uppercase">Lưỡi Liềm</p>
-                </div>
-                <div class="space-y-2 opacity-70 hover:opacity-100 transition-opacity">
-                    <div class="w-10 h-10 mx-auto rounded-full bg-slate-800 border-2 border-sky-200 relative overflow-hidden">
-                        <div class="absolute right-0 w-1/2 h-full bg-sky-100"></div>
-                    </div>
-                    <p class="text-[10px] font-bold text-sky-800 uppercase">Bán Nguyệt</p>
-                </div>
-                <div class="space-y-2 opacity-70 hover:opacity-100 transition-opacity">
-                    <div class="w-10 h-10 mx-auto rounded-full bg-slate-800 border-2 border-sky-200 relative overflow-hidden">
-                        <div class="absolute right-0 w-3/4 h-full bg-sky-100"></div>
-                    </div>
-                    <p class="text-[10px] font-bold text-sky-800 uppercase">Trăng Khuyết</p>
-                </div>
-                <div class="space-y-2 opacity-70 hover:opacity-100 transition-opacity">
-                    <div class="w-10 h-10 mx-auto rounded-full bg-sky-100 border-2 border-sky-200"></div>
-                    <p class="text-[10px] font-bold text-sky-800 uppercase">Trăng Tròn</p>
-                </div>
-                <div class="space-y-2 opacity-70 hover:opacity-100 transition-opacity">
-                    <div class="w-10 h-10 mx-auto rounded-full bg-slate-800 border-2 border-sky-200 relative overflow-hidden">
-                        <div class="absolute left-0 w-3/4 h-full bg-sky-100"></div>
-                    </div>
-                    <p class="text-[10px] font-bold text-sky-800 uppercase">Trăng Khuyết</p>
-                </div>
-                <div class="space-y-2 opacity-70 hover:opacity-100 transition-opacity">
-                    <div class="w-10 h-10 mx-auto rounded-full bg-slate-800 border-2 border-sky-200 relative overflow-hidden">
-                        <div class="absolute left-0 w-1/2 h-full bg-sky-100"></div>
-                    </div>
-                    <p class="text-[10px] font-bold text-sky-800 uppercase">Bán Nguyệt</p>
-                </div>
-                <div class="space-y-2 opacity-70 hover:opacity-100 transition-opacity">
-                    <div class="w-10 h-10 mx-auto rounded-full bg-slate-800 border-2 border-sky-200 relative overflow-hidden">
-                        <div class="absolute left-0 w-1/4 h-full bg-sky-100"></div>
-                    </div>
-                    <p class="text-[10px] font-bold text-sky-800 uppercase">Lưỡi Liềm</p>
-                </div>
-            </div>
-        </div>
-
-        <footer class="mt-12 text-center text-sky-400 text-sm">
-            <p>&copy; 2024 Lunar Tracker - Website Thiết kế bởi Kỹ sư Web</p>
-        </footer>
+    <!-- Header -->
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center gap-2 mb-2">
+        <span class="text-4xl">🌙</span>
+        <h1 class="text-4xl font-bold section-title">Chu Kỳ Mặt Trăng</h1>
+        <span class="text-4xl">🌍</span>
+      </div>
+      <p class="text-blue-700 text-sm mt-1 opacity-80">Tính toán & tra cứu chu kỳ quỹ đạo Mặt Trăng quanh Trái Đất</p>
     </div>
 
-    <script>
-        // Constants for Moon Calculation
-        const LUNAR_MONTH = 29.530588853;
-        const KNOWN_NEW_MOON = new Date('2024-01-11T11:57:00Z').getTime();
+    <!-- Orbit Animation + Quick Facts -->
+    <div class="glass-card p-6 mb-6 flex flex-col md:flex-row items-center gap-8">
+      <!-- Animation -->
+      <div class="orbit-container flex-shrink-0">
+        <div class="orbit-ring"></div>
+        <div class="earth"></div>
+        <div class="moon-wrapper">
+          <div class="moon"></div>
+        </div>
+      </div>
 
-        const datePicker = document.getElementById('date-picker');
-        const phaseName = document.getElementById('phase-name');
-        const illuminationDisp = document.getElementById('illumination');
-        const moonAgeDisp = document.getElementById('moon-age');
-        const nextNewMoonDisp = document.getElementById('next-new-moon');
-        const nextFullMoonDisp = document.getElementById('next-full-moon');
-        const moonVisual = document.getElementById('moon-visual');
+      <!-- Quick facts -->
+      <div class="flex-1 w-full">
+        <h2 class="section-title text-lg mb-4">📊 Thông Số Cơ Bản</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="info-item p-3 tooltip">
+            <div class="text-xs text-blue-500 font-medium mb-1">Chu kỳ Giao Hội (Synodic)</div>
+            <div class="text-2xl font-bold text-blue-800">29.53 ngày</div>
+            <div class="text-xs text-blue-500 mt-1">Trăng non → Trăng non</div>
+            <span class="tip">Chu kỳ tính từ Mặt Trời – ảnh hưởng lịch âm</span>
+          </div>
+          <div class="info-item p-3 tooltip">
+            <div class="text-xs text-blue-500 font-medium mb-1">Chu kỳ Thiên Văn (Sidereal)</div>
+            <div class="text-2xl font-bold text-blue-800">27.32 ngày</div>
+            <div class="text-xs text-blue-500 mt-1">Tính theo ngôi sao cố định</div>
+            <span class="tip">Chu kỳ thực quay quanh Trái Đất</span>
+          </div>
+          <div class="info-item p-3 tooltip">
+            <div class="text-xs text-blue-500 font-medium mb-1">Chu kỳ Dị Tâm (Anomalistic)</div>
+            <div class="text-2xl font-bold text-blue-800">27.55 ngày</div>
+            <div class="text-xs text-blue-500 mt-1">Cận điểm → Cận điểm</div>
+            <span class="tip">Từ điểm gần nhất đến điểm gần nhất</span>
+          </div>
+          <div class="info-item p-3 tooltip">
+            <div class="text-xs text-blue-500 font-medium mb-1">Chu kỳ Giao Điểm (Draconic)</div>
+            <div class="text-2xl font-bold text-blue-800">27.21 ngày</div>
+            <div class="text-xs text-blue-500 mt-1">Giao điểm → Giao điểm</div>
+            <span class="tip">Liên quan đến chu kỳ nhật/nguyệt thực</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        // Set default date to today
-        const today = new Date();
-        datePicker.value = today.toISOString().split('T')[0];
+    <!-- Calculator -->
+    <div class="glass-card p-6 mb-6">
+      <h2 class="section-title text-lg mb-5">🔭 Công Cụ Tính Toán Chu Kỳ</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-semibold text-blue-700 mb-1">Ngày bắt đầu</label>
+          <input type="date" id="startDate" class="w-full px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-blue-700 mb-1">Ngày kết thúc</label>
+          <input type="date" id="endDate" class="w-full px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-blue-700 mb-1">Loại chu kỳ</label>
+          <select id="cycleType" class="w-full px-3 py-2 text-sm">
+            <option value="29.53059">Giao Hội (Synodic) – 29.53 ngày</option>
+            <option value="27.32166">Thiên Văn (Sidereal) – 27.32 ngày</option>
+            <option value="27.55455">Dị Tâm (Anomalistic) – 27.55 ngày</option>
+            <option value="27.21222">Giao Điểm (Draconic) – 27.21 ngày</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="calculate()" class="btn-primary w-full py-3 text-sm mb-5">
+        ✨ Tính Chu Kỳ
+      </button>
 
-        function getMoonData(date) {
-            const diff = date.getTime() - KNOWN_NEW_MOON;
-            const daysSince = diff / (1000 * 60 * 60 * 24);
-            const cycles = daysSince / LUNAR_MONTH;
-            const age = ((cycles % 1 + 1) % 1) * LUNAR_MONTH;
-            const phase = age / LUNAR_MONTH;
-            
-            let name = "";
-            let illumination = 0;
+      <!-- Result -->
+      <div id="result" class="hidden result-highlight p-5">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-4">
+          <div>
+            <div class="text-xs text-blue-500 mb-1">Số ngày</div>
+            <div id="rDays" class="text-2xl font-bold text-blue-800"></div>
+          </div>
+          <div>
+            <div class="text-xs text-blue-500 mb-1">Số chu kỳ đủ</div>
+            <div id="rCycles" class="text-2xl font-bold text-blue-800"></div>
+          </div>
+          <div>
+            <div class="text-xs text-blue-500 mb-1">Phần dư (ngày)</div>
+            <div id="rRem" class="text-2xl font-bold text-blue-800"></div>
+          </div>
+          <div>
+            <div class="text-xs text-blue-500 mb-1">Phần dư (%)</div>
+            <div id="rPct" class="text-2xl font-bold text-blue-800"></div>
+          </div>
+        </div>
+        <!-- Progress -->
+        <div class="mb-1 flex justify-between text-xs text-blue-600">
+          <span>Tiến trình chu kỳ cuối</span>
+          <span id="rPctLabel"></span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+        </div>
+        <p id="rSummary" class="text-xs text-blue-700 mt-3 text-center font-medium"></p>
+      </div>
+    </div>
 
-            // Phase logic
-            if (phase < 0.02 || phase > 0.98) name = "Trăng Non (New Moon)";
-            else if (phase < 0.23) name = "Trăng Lưỡi Liềm Đầu Tháng (Waxing Crescent)";
-            else if (phase < 0.27) name = "Bán Nguyệt Đầu Tháng (First Quarter)";
-            else if (phase < 0.48) name = "Trăng Khuyết Đầu Tháng (Waxing Gibbous)";
-            else if (phase < 0.52) name = "Trăng Tròn (Full Moon)";
-            else if (phase < 0.73) name = "Trăng Khuyết Cuối Tháng (Waning Gibbous)";
-            else if (phase < 0.77) name = "Bán Nguyệt Cuối Tháng (Last Quarter)";
-            else name = "Trăng Lưỡi Liềm Cuối Tháng (Waning Crescent)";
+    <!-- Phase Finder -->
+    <div class="glass-card p-6 mb-6">
+      <h2 class="section-title text-lg mb-5">🌕 Pha Mặt Trăng Theo Ngày</h2>
+      <div class="flex flex-col sm:flex-row gap-3 mb-5">
+        <input type="date" id="phaseDate" class="flex-1 px-3 py-2 text-sm" />
+        <button onclick="getPhase()" class="btn-primary px-6 py-2 text-sm whitespace-nowrap">
+          🔍 Tra Cứu Pha
+        </button>
+      </div>
 
-            // Basic illumination percentage
-            illumination = Math.abs(50 - (Math.abs(phase - 0.5) * 100)) * 2;
-            if (phase > 0.48 && phase < 0.52) illumination = 100;
-            if (phase < 0.02 || phase > 0.98) illumination = 0;
+      <div id="phaseResult" class="hidden">
+        <div class="flex flex-col sm:flex-row items-center gap-6">
+          <div class="text-center flex-shrink-0">
+            <div id="moonPhaseDisplay"><div class="lit" id="moonLit"></div></div>
+            <div id="phaseEmoji" class="text-3xl mt-2"></div>
+          </div>
+          <div class="flex-1 w-full">
+            <div class="text-xl font-bold text-blue-800 mb-1" id="phaseName"></div>
+            <div class="text-sm text-blue-600 mb-3" id="phaseDesc"></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="info-item p-2 text-center">
+                <div class="text-xs text-blue-500">Tuổi mặt trăng</div>
+                <div class="font-bold text-blue-800" id="moonAge"></div>
+              </div>
+              <div class="info-item p-2 text-center">
+                <div class="text-xs text-blue-500">Độ sáng (%)</div>
+                <div class="font-bold text-blue-800" id="moonIllum"></div>
+              </div>
+              <div class="info-item p-2 text-center">
+                <div class="text-xs text-blue-500">Trăng non tiếp theo</div>
+                <div class="font-bold text-blue-800 text-xs" id="nextNew"></div>
+              </div>
+              <div class="info-item p-2 text-center">
+                <div class="text-xs text-blue-500">Trăng tròn tiếp theo</div>
+                <div class="font-bold text-blue-800 text-xs" id="nextFull"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            return { age, phase, name, illumination: Math.round(illumination) };
-        }
+    <!-- Moon Phases Reference -->
+    <div class="glass-card p-6 mb-6">
+      <h2 class="section-title text-lg mb-5">🌑🌒🌓🌔🌕🌖🌗🌘 8 Pha Mặt Trăng</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="phase-card p-3 text-center">
+          <div class="phase-icon" style="background:#0d1a2a;"><div class="phase-light" style="width:0%;"></div></div>
+          <div class="text-2xl mb-1">🌑</div>
+          <div class="font-semibold text-blue-800 text-sm">Trăng Non</div>
+          <div class="text-xs text-blue-500">New Moon</div>
+          <div class="text-xs text-blue-600 mt-1">Ngày 0 – 0%</div>
+        </div>
+        <div class="phase-card p-3 text-center">
+          <div class="phase-icon"><div class="phase-light" style="width:25%; right:0;"></div></div>
+          <div class="text-2xl mb-1">🌒</div>
+          <div class="font-semibold text-blue-800 text-sm">Lưỡi Liềm Đầu</div>
+          <div class="text-xs text-blue-500">Waxing Crescent</div>
+          <div class="text-xs text-blue-600 mt-1">Ngày 1-7 – ~25%</div>
+        </div>
+        <div class="phase-card p-3 text-center">
+          <div class="phase-icon"><div class="phase-light" style="width:50%; right:0;"></div></div>
+          <div class="text-2xl mb-1">🌓</div>
+          <div class="font-semibold text-blue-800 text-sm">Trăng Bán Nguyệt Đầu</div>
+          <div class="text-xs text-blue-500">First Quarter</div>
+          <div class="text-xs text-blue-600 mt-1">Ngày 7-8 – 50%</div>
+        </div>
+        <div class="phase-card p-3 text-center">
+          <div class="phase-icon"><div class="phase-light" style="width:75%; right:0;"></div></div>
+          <div class="text-2xl mb-1">🌔</div>
+          <div class="font-semibold text-blue-800 text-sm">Trăng Khuyết Đầu</div>
+          <div class="text-xs text-blue-500">Waxing Gibbous</div>
+          <div class="text-xs text-blue-600 mt-1">Ngày 8-14 – ~75%</div>
+        </div>
+        <div class="phase-card p-3 text-center">
+          <div class="phase-icon"><div class="phase-light" style="width:100%; right:0;"></div></div>
+          <div class="text-2xl mb-1">🌕</div>
+          <div class="font-semibold text-blue-800 text-sm">Trăng Tròn</div>
+          <div class="text-xs text-blue-500">Full Moon</div>
+          <div class="text-xs text-blue-600 mt-1">Ngày 14-15 – 100%</div>
+        </div>
+        <div class="phase-card p-3 text-center">
+          <div class="phase-icon"><div class="phase-light" style="width:75%; left:0;"></div></div>
+          <div class="text-2xl mb-1">🌖</div>
+          <div class="font-semibold text-blue-800 text-sm">Trăng Khuyết Cuối</div>
+          <div class="text-xs text-blue-500">Waning Gibbous</div>
+          <div class="text-xs text-blue-600 mt-1">Ngày 15-22 – ~75%</div>
+        </div>
+        <div class="phase-card p-3 text-center">
+          <div class="phase-icon"><div class="phase-light" style="width:50%; left:0;"></div></div>
+          <div class="text-2xl mb-1">🌗</div>
+          <div class="font-semibold text-blue-800 text-sm">Trăng Bán Nguyệt Cuối</div>
+          <div class="text-xs text-blue-500">Last Quarter</div>
+          <div class="text-xs text-blue-600 mt-1">Ngày 22-23 – 50%</div>
+        </div>
+        <div class="phase-card p-3 text-center">
+          <div class="phase-icon"><div class="phase-light" style="width:25%; left:0;"></div></div>
+          <div class="text-2xl mb-1">🌘</div>
+          <div class="font-semibold text-blue-800 text-sm">Lưỡi Liềm Cuối</div>
+          <div class="text-xs text-blue-500">Waning Crescent</div>
+          <div class="text-xs text-blue-600 mt-1">Ngày 23-29 – ~25%</div>
+        </div>
+      </div>
+    </div>
 
-        function drawMoon(phase) {
-            const r = 100;
-            const c = 110;
-            let d = "";
-            
-            // Re-calculating path for better accuracy
-            // The logic: 
-            // 1. Draw a half circle (left or right)
-            // 2. Draw an ellipse that either adds to it (Gibbous) or subtracts (Crescent)
-            
-            if (phase <= 0.5) {
-                // Waxing: Lit on the right
-                const rx = Math.abs(r - (phase * 4 * r)); // Width of the inner ellipse
-                const sweep = phase < 0.25 ? 0 : 1; 
-                // Large arc flag for the outer half-circle is always 0 for 180 degrees
-                d = `M ${c} ${c-r} 
-                     A ${r} ${r} 0 0 1 ${c} ${c+r} 
-                     A ${rx} ${r} 0 0 ${sweep} ${c} ${c-r}`;
-            } else {
-                // Waning: Lit on the left
-                const p = phase - 0.5;
-                const rx = Math.abs(r - (p * 4 * r));
-                const sweep = p < 0.25 ? 1 : 0;
-                d = `M ${c} ${c-r} 
-                     A ${r} ${r} 0 0 0 ${c} ${c+r} 
-                     A ${rx} ${r} 0 0 ${sweep} ${c} ${c-r}`;
-            }
+    <!-- Fun Facts -->
+    <div class="glass-card p-6 mb-6">
+      <h2 class="section-title text-lg mb-4">💡 Sự Thật Thú Vị</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="info-item p-3 flex gap-3 items-start">
+          <span class="text-2xl">🌑</span>
+          <div>
+            <div class="font-semibold text-blue-800 text-sm">Triều cường & Mặt Trăng</div>
+            <div class="text-xs text-blue-600 mt-1">Lực hấp dẫn của Mặt Trăng gây ra thủy triều. Khi trăng tròn và trăng non, thủy triều mạnh nhất (triều cường).</div>
+          </div>
+        </div>
+        <div class="info-item p-3 flex gap-3 items-start">
+          <span class="text-2xl">🔄</span>
+          <div>
+            <div class="font-semibold text-blue-800 text-sm">Đồng bộ tự quay</div>
+            <div class="text-xs text-blue-600 mt-1">Mặt Trăng tự quay quanh trục mất đúng 27.32 ngày – bằng chu kỳ thiên văn, nên ta chỉ thấy một mặt.</div>
+          </div>
+        </div>
+        <div class="info-item p-3 flex gap-3 items-start">
+          <span class="text-2xl">📏</span>
+          <div>
+            <div class="font-semibold text-blue-800 text-sm">Khoảng cách trung bình</div>
+            <div class="text-xs text-blue-600 mt-1">384.400 km – Ánh sáng mất 1,28 giây để đi từ Trái Đất đến Mặt Trăng.</div>
+          </div>
+        </div>
+        <div class="info-item p-3 flex gap-3 items-start">
+          <span class="text-2xl">📅</span>
+          <div>
+            <div class="font-semibold text-blue-800 text-sm">Lịch Âm</div>
+            <div class="text-xs text-blue-600 mt-1">Lịch âm dựa trên chu kỳ giao hội 29.53 ngày. Một năm âm lịch có 12-13 tháng (354-384 ngày).</div>
+          </div>
+        </div>
+        <div class="info-item p-3 flex gap-3 items-start">
+          <span class="text-2xl">☀️</span>
+          <div>
+            <div class="font-semibold text-blue-800 text-sm">Nhật thực & Saros</div>
+            <div class="text-xs text-blue-600 mt-1">Chu kỳ Saros = 6585.32 ngày (~18 năm 11 ngày) – khoảng lặp lại của nhật thực và nguyệt thực.</div>
+          </div>
+        </div>
+        <div class="info-item p-3 flex gap-3 items-start">
+          <span class="text-2xl">🚀</span>
+          <div>
+            <div class="font-semibold text-blue-800 text-sm">Mặt Trăng di chuyển xa dần</div>
+            <div class="text-xs text-blue-600 mt-1">Mỗi năm Mặt Trăng di chuyển xa Trái Đất thêm khoảng 3.8 cm do tương tác thủy triều.</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            moonVisual.innerHTML = `
-                <svg viewBox="0 0 220 220" class="moon-svg">
-                    <defs>
-                        <radialGradient id="moonGradient" cx="30%" cy="30%" r="70%">
-                            <stop offset="0%" stop-color="#f8fafc" />
-                            <stop offset="100%" stop-color="#cbd5e1" />
-                        </radialGradient>
-                    </defs>
-                    <circle cx="${c}" cy="${c}" r="${r}" fill="#0f172a" />
-                    <path d="${d}" fill="url(#moonGradient)" />
-                    <!-- Aesthetic crater details -->
-                    <g fill="#94a3b8" opacity="0.2">
-                        <circle cx="${c-25}" cy="${c-15}" r="8" />
-                        <circle cx="${c+10}" cy="${c+35}" r="12" />
-                        <circle cx="${c-10}" cy="${c+20}" r="5" />
-                        <circle cx="${c+40}" cy="${c-10}" r="6" />
-                    </g>
-                </svg>
-            `;
-        }
+    <!-- Footer -->
+    <div class="text-center text-xs text-blue-500 pb-4 opacity-70">
+      🌙 Dữ liệu thiên văn học dựa trên tính toán JPL / IAU · Thiết kế bởi Web Engineer
+    </div>
+  </div>
 
-        function updateUI() {
-            const selectedDate = new Date(datePicker.value);
-            const data = getMoonData(selectedDate);
+  <script>
+    // =========== STARFIELD ===========
+    (function() {
+      const container = document.getElementById('stars');
+      for (let i = 0; i < 60; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        const size = Math.random() * 4 + 2;
+        s.style.cssText = `
+          width:${size}px; height:${size}px;
+          top:${Math.random()*100}%;
+          left:${Math.random()*100}%;
+          animation-duration:${Math.random()*4+2}s;
+          animation-delay:${Math.random()*5}s;
+        `;
+        container.appendChild(s);
+      }
+    })();
 
-            phaseName.textContent = data.name;
-            illuminationDisp.textContent = data.illumination + "%";
-            moonAgeDisp.textContent = data.age.toFixed(1) + " ngày";
+    // =========== DEFAULT DATES ===========
+    (function() {
+      const today = new Date();
+      const fmt = d => d.toISOString().split('T')[0];
+      document.getElementById('startDate').value = fmt(today);
+      document.getElementById('phaseDate').value = fmt(today);
+      const future = new Date(today);
+      future.setDate(future.getDate() + 90);
+      document.getElementById('endDate').value = fmt(future);
+    })();
 
-            drawMoon(data.phase);
+    // =========== CYCLE CALCULATOR ===========
+    function calculate() {
+      const s = document.getElementById('startDate').value;
+      const e = document.getElementById('endDate').value;
+      const period = parseFloat(document.getElementById('cycleType').value);
+      if (!s || !e) { alert('Vui lòng chọn đầy đủ ngày bắt đầu và kết thúc!'); return; }
+      const d1 = new Date(s), d2 = new Date(e);
+      if (d2 <= d1) { alert('Ngày kết thúc phải sau ngày bắt đầu!'); return; }
+      const days = (d2 - d1) / 86400000;
+      const cycles = Math.floor(days / period);
+      const rem = (days % period).toFixed(2);
+      const pct = ((days % period) / period * 100).toFixed(1);
 
-            // Prediction
-            const daysToNew = (1 - data.phase) * LUNAR_MONTH;
-            const nextNew = new Date(selectedDate.getTime() + daysToNew * 86400000);
-            
-            let daysToFull;
-            if (data.phase <= 0.5) daysToFull = (0.5 - data.phase) * LUNAR_MONTH;
-            else daysToFull = (1.5 - data.phase) * LUNAR_MONTH;
-            const nextFull = new Date(selectedDate.getTime() + daysToFull * 86400000);
+      document.getElementById('rDays').textContent = days.toFixed(1);
+      document.getElementById('rCycles').textContent = cycles;
+      document.getElementById('rRem').textContent = rem;
+      document.getElementById('rPct').textContent = pct + '%';
+      document.getElementById('rPctLabel').textContent = pct + '%';
+      document.getElementById('rSummary').textContent =
+        `Trong ${days.toFixed(1)} ngày có ${cycles} chu kỳ đầy đủ và ${rem} ngày dư (${pct}% chu kỳ tiếp theo)`;
 
-            nextNewMoonDisp.textContent = nextNew.toLocaleDateString('vi-VN');
-            nextFullMoonDisp.textContent = nextFull.toLocaleDateString('vi-VN');
-        }
+      document.getElementById('result').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('progressBar').style.width = pct + '%';
+      }, 100);
+    }
 
-        datePicker.addEventListener('change', updateUI);
-        updateUI(); // Initial run
-    </script>
+    // =========== MOON PHASE CALCULATOR ===========
+    // Reference: Jan 6, 2000 was a new moon (Julian Date 2451549.5)
+    const KNOWN_NEW_MOON = new Date('2000-01-06T18:14:00Z');
+    const SYNODIC = 29.53059;
+
+    function getMoonAge(date) {
+      const diff = (date - KNOWN_NEW_MOON) / 86400000;
+      let age = ((diff % SYNODIC) + SYNODIC) % SYNODIC;
+      return age;
+    }
+
+    function getIllumination(age) {
+      return (1 - Math.cos(2 * Math.PI * age / SYNODIC)) / 2 * 100;
+    }
+
+    function getPhaseInfo(age) {
+      const phases = [
+        { max: 1.85,  name: 'Trăng Non', emoji: '🌑', desc: 'Mặt Trăng nằm giữa Trái Đất và Mặt Trời – không nhìn thấy từ Trái Đất.' },
+        { max: 7.38,  name: 'Lưỡi Liềm Đầu Tháng', emoji: '🌒', desc: 'Trăng bắt đầu lớn dần, xuất hiện như lưỡi liềm mỏng phía Tây.' },
+        { max: 9.22,  name: 'Trăng Bán Nguyệt Đầu', emoji: '🌓', desc: 'Nửa phải Mặt Trăng sáng – góc vuông với Mặt Trời.' },
+        { max: 14.77, name: 'Trăng Khuyết Đầu Tháng', emoji: '🌔', desc: 'Trăng gần tròn, phần tối nhỏ ở bên trái.' },
+        { max: 16.61, name: 'Trăng Tròn', emoji: '🌕', desc: 'Trái Đất nằm giữa Mặt Trăng và Mặt Trời – Mặt Trăng sáng hoàn toàn.' },
+        { max: 22.15, name: 'Trăng Khuyết Cuối Tháng', emoji: '🌖', desc: 'Trăng bắt đầu khuyết dần, phần tối ở bên phải.' },
+        { max: 23.99, name: 'Trăng Bán Nguyệt Cuối', emoji: '🌗', desc: 'Nửa trái Mặt Trăng sáng – bước vào giai đoạn tàn dần.' },
+        { max: 29.53, name: 'Lưỡi Liềm Cuối Tháng', emoji: '🌘', desc: 'Trăng nhỏ dần trước khi biến mất vào trăng non.' },
+      ];
+      return phases.find(p => age < p.max) || phases[phases.length - 1];
+    }
+
+    function formatDate(d) {
+      return d.toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
+    }
+
+    function getPhase() {
+      const val = document.getElementById('phaseDate').value;
+      if (!val) { alert('Vui lòng chọn ngày!'); return; }
+      const date = new Date(val + 'T12:00:00');
+      const age = getMoonAge(date);
+      const illum = getIllumination(age);
+      const info = getPhaseInfo(age);
+
+      // Next new moon
+      const daysToNew = ((SYNODIC - age) % SYNODIC);
+      const nextNew = new Date(date.getTime() + daysToNew * 86400000);
+      // Next full moon
+      let daysToFull = (14.765 - age + SYNODIC) % SYNODIC;
+      if (daysToFull < 0.5) daysToFull += SYNODIC;
+      const nextFull = new Date(date.getTime() + daysToFull * 86400000);
+
+      document.getElementById('phaseName').textContent = info.emoji + ' ' + info.name;
+      document.getElementById('phaseEmoji').textContent = info.emoji;
+      document.getElementById('phaseDesc').textContent = info.desc;
+      document.getElementById('moonAge').textContent = age.toFixed(2) + ' ngày';
+      document.getElementById('moonIllum').textContent = illum.toFixed(1) + '%';
+      document.getElementById('nextNew').textContent = formatDate(nextNew) + ` (${daysToNew.toFixed(1)} ngày)`;
+      document.getElementById('nextFull').textContent = formatDate(nextFull) + ` (${daysToFull.toFixed(1)} ngày)`;
+
+      // Moon phase display
+      const litEl = document.getElementById('moonLit');
+      const display = document.getElementById('moonPhaseDisplay');
+      const halfCycle = SYNODIC / 2;
+      if (age <= halfCycle) {
+        // Waxing: light on right
+        litEl.style.left = 'auto';
+        litEl.style.right = '0';
+        litEl.style.width = (illum).toFixed(1) + '%';
+      } else {
+        // Waning: light on left
+        litEl.style.right = 'auto';
+        litEl.style.left = '0';
+        litEl.style.width = (illum).toFixed(1) + '%';
+      }
+
+      document.getElementById('phaseResult').classList.remove('hidden');
+    }
+  </script>
 </body>
 </html>
